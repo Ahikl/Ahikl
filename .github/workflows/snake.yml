@@ -26,7 +26,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Check if the generated files exist
       - name: Check Generated Files
         run: |
           ls -la dist
