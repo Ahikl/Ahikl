@@ -1,11 +1,9 @@
-name: generate animation
+name: Generate GitHub Snake
 
 on:
   schedule:
     - cron: "0 */24 * * *"
-
   workflow_dispatch:
-
   push:
     branches:
       - main
@@ -14,22 +12,29 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Generate github-contribution-grid-snake.svg
-        uses: Platane/snk/render@v3
+      - uses: actions/checkout@v4
+      - name: Generate Snake Animation Files
+        uses: Platane/snk@v3
         with:
-          github_user: ${{ github.repository_owner }}
-          output: |
-            dist/github-contribution-grid-snake.svg
-            dist/github-contribution-grid-snake-dark.svg?palette=github-dark
+
+          github_user_name: ahikl
+          outputs: |
+            dist/github-snake.svg
+            dist/github-snake-dark.svg?palette=github-dark
+            dist/ocean.gif?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push generated files to output branch
+      # Check if the generated files exist
+      - name: Check Generated Files
+        run: |
+          ls -la dist
+          test -f dist/github-snake.svg
+          test -f dist/github-snake-dark.svg
+          test -f dist/ocean.gif
+
+      - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: output
